@@ -29,6 +29,13 @@ public class Player : MonoBehaviour
 
     //powerup triple shot
     public bool canTripleShot = false;
+    //powerup speed boost
+    public bool canSpeedBoost = false;
+    //powerup shields 
+    public bool canShield = false;
+    public int lives = 3;
+    [SerializeField]
+    private GameObject _explosionPrefab;
 
     // Start is called before the first frame update
     private void Start()
@@ -95,8 +102,18 @@ public class Player : MonoBehaviour
         float vertialInput = Input.GetAxis("Vertical");
         //new vector3(1->5,0,0) * 1 * 5, vector3(1->-3,0,0) * 1 * -3
         //vector3(1,0,0)* 1 * (-1-> left, 1 -> right)
-        transform.Translate(Vector3.right * _speed * horizontalInput * Time.deltaTime);
-        transform.Translate(Vector3.up * _speed * vertialInput * Time.deltaTime);
+
+        if(canSpeedBoost == true)
+        {
+            transform.Translate(Vector3.right * (_speed * 3.0f) * horizontalInput * Time.deltaTime);
+            transform.Translate(Vector3.up * (_speed*3.0f) * vertialInput*Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.right * _speed * horizontalInput * Time.deltaTime);
+            transform.Translate(Vector3.up * _speed * vertialInput * Time.deltaTime);
+        }
+            
 
         //if player on the y is greater than 0
         //set player position to 0
@@ -130,16 +147,36 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(8, transform.position.y, 0);
         }
     }
-        public void TripleShotPowerOn()
+    public void Damage()
+    {
+        lives -= 1;
+        if(lives < 1)
         {
-            canTripleShot = true;
-            StartCoroutine(TripleShotPowerDownRoutine());
+            Instantiate(_explosionPrefab,transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
         }
-        public IEnumerator TripleShotPowerDownRoutine()
-        {
-            yield return new WaitForSeconds(5.0f);
-            canTripleShot = false;
-        }
+    }
+     public void TripleShotPowerOn()
+     {
+        canTripleShot = true;
+        StartCoroutine(TripleShotPowerDownRoutine());
+      }
+     public IEnumerator TripleShotPowerDownRoutine()
+     {
+        yield return new WaitForSeconds(5.0f);
+        canTripleShot = false;
+     }
+
+    public void SpeedBoostOn()
+    {
+        canSpeedBoost = true;
+        StartCoroutine(SpeedBoostDown());
+    }
+    public IEnumerator SpeedBoostDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+        canSpeedBoost = false;
+    }
 }
 
 

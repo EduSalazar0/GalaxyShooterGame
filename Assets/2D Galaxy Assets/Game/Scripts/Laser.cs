@@ -24,8 +24,11 @@ public class Laser : MonoBehaviour
         //if position on the y of my laser is greater than or equal to 5.71
         //destroy the laser
         if(transform.position.y >= 5.71f)
-
         {
+            if(transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);  
+            }
             Destroy(this.gameObject);
         }
     }
