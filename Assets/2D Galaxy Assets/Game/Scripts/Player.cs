@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -11,6 +12,8 @@ public class Player : MonoBehaviour
     //option value assigned
     [SerializeField]
     private GameObject _laserPrefab;
+    [SerializeField]
+    private GameObject _tripleShotPrefab;
 
     //fireRate is 0.5f
     //canFire -- has the amount of time between diring passed?
@@ -23,7 +26,9 @@ public class Player : MonoBehaviour
     private float _speed = 5.0f;
     public float horizontalInput;
     public float verticalInput;
-    
+
+    //powerup triple shot
+    public bool canTripleShot = false;
 
     // Start is called before the first frame update
     private void Start()
@@ -53,12 +58,34 @@ public class Player : MonoBehaviour
     }
     private void Shoot()
     {
-        
+        //if tiple shoot 
+        //shoot 3 lasers
+        //else
+        //shoot 1
+
         if (Time.time > _canFire)
         {
-            //spawn my laser
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 2.55f, 0), Quaternion.identity);
-            _canFire = Time.time + _fireRate;
+            if(canTripleShot == true)
+            {
+                /*
+                //Right
+                Instantiate(_laserPrefab, transform.position + new Vector3(2.14f, -1.01f, 0), Quaternion.identity);
+                //Center
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 2.55f, 0), Quaternion.identity);
+                //Left
+                Instantiate(_laserPrefab, transform.position + new Vector3(-2.14f, -1.01f, 0), Quaternion.identity);
+                */
+                Instantiate(_tripleShotPrefab,transform.position,Quaternion.identity);
+
+            }
+            else
+            {
+                //spawn my laser
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 2.55f, 0), Quaternion.identity);
+            }
+                
+
+                _canFire = Time.time + _fireRate;
         }
     }
     private void Movement()
@@ -103,5 +130,16 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(8, transform.position.y, 0);
         }
     }
+        public void TripleShotPowerOn()
+        {
+            canTripleShot = true;
+            StartCoroutine(TripleShotPowerDownRoutine());
+        }
+        public IEnumerator TripleShotPowerDownRoutine()
+        {
+            yield return new WaitForSeconds(5.0f);
+            canTripleShot = false;
+        }
 }
+
 
