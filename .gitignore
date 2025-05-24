@@ -1,0 +1,38 @@
+# Ignorar archivos y carpetas generados por Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]in/
+[Ll]ogs/
+
+# Ignorar archivos y carpetas generados por Visual Studio
+.vs/
+.vscode/
+.idea/
+
+# Archivos de configuración de Visual Studio (o Rider)
+.vsconfig
+
+# Archivos de solución y proyectos generados por Visual Studio
+*.csproj
+*.sln
+*.user
+*.userprefs
+
+# Ignorar los resultados de las compilaciones
+build/
+Build/
+Exports/
+
+# Ignorar archivos de crash
+crash.dmp
+
+# Ignorar archivos de memoria generados por Unity
+*.stackdump
+
+# Ignorar archivos generados en sistemas macOS
+.DS_Store
+
+# Archivos generados por Unity para builds (no necesarios para el repositorio)
+ExportedObj/
+obj/
