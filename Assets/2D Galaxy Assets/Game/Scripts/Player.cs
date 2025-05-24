@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     public int lives = 3;
     [SerializeField]
     private GameObject _explosionPrefab;
+    [SerializeField]
+    private GameObject _shieldGameObject;
 
     // Start is called before the first frame update
     private void Start()
@@ -47,7 +49,7 @@ public class Player : MonoBehaviour
         //current pos = new position
         //speed = 10;
         transform.position = new Vector3(0, 0, 0);
-        
+
 
     }
 
@@ -60,7 +62,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButton(0))
         {
             Shoot();
-        } 
+        }
 
     }
     private void Shoot()
@@ -72,7 +74,7 @@ public class Player : MonoBehaviour
 
         if (Time.time > _canFire)
         {
-            if(canTripleShot == true)
+            if (canTripleShot == true)
             {
                 /*
                 //Right
@@ -82,7 +84,7 @@ public class Player : MonoBehaviour
                 //Left
                 Instantiate(_laserPrefab, transform.position + new Vector3(-2.14f, -1.01f, 0), Quaternion.identity);
                 */
-                Instantiate(_tripleShotPrefab,transform.position,Quaternion.identity);
+                Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
 
             }
             else
@@ -90,9 +92,9 @@ public class Player : MonoBehaviour
                 //spawn my laser
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 2.55f, 0), Quaternion.identity);
             }
-                
 
-                _canFire = Time.time + _fireRate;
+
+            _canFire = Time.time + _fireRate;
         }
     }
     private void Movement()
@@ -103,17 +105,17 @@ public class Player : MonoBehaviour
         //new vector3(1->5,0,0) * 1 * 5, vector3(1->-3,0,0) * 1 * -3
         //vector3(1,0,0)* 1 * (-1-> left, 1 -> right)
 
-        if(canSpeedBoost == true)
+        if (canSpeedBoost == true)
         {
             transform.Translate(Vector3.right * (_speed * 3.0f) * horizontalInput * Time.deltaTime);
-            transform.Translate(Vector3.up * (_speed*3.0f) * vertialInput*Time.deltaTime);
+            transform.Translate(Vector3.up * (_speed * 3.0f) * vertialInput * Time.deltaTime);
         }
         else
         {
             transform.Translate(Vector3.right * _speed * horizontalInput * Time.deltaTime);
             transform.Translate(Vector3.up * _speed * vertialInput * Time.deltaTime);
         }
-            
+
 
         //if player on the y is greater than 0
         //set player position to 0
@@ -149,23 +151,29 @@ public class Player : MonoBehaviour
     }
     public void Damage()
     {
-        lives -= 1;
-        if(lives < 1)
+        if(canShield == true)
         {
-            Instantiate(_explosionPrefab,transform.position, Quaternion.identity);
+            canShield = false;
+            _shieldGameObject.SetActive(false);
+            return;
+        }
+        lives -= 1;
+        if (lives < 1)
+        {
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
     }
-     public void TripleShotPowerOn()
-     {
+    public void TripleShotPowerOn()
+    {
         canTripleShot = true;
         StartCoroutine(TripleShotPowerDownRoutine());
-      }
-     public IEnumerator TripleShotPowerDownRoutine()
-     {
+    }
+    public IEnumerator TripleShotPowerDownRoutine()
+    {
         yield return new WaitForSeconds(5.0f);
         canTripleShot = false;
-     }
+    }
 
     public void SpeedBoostOn()
     {
@@ -176,6 +184,11 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         canSpeedBoost = false;
+    }
+    public void enableShield()
+    {
+        canShield = true;
+        _shieldGameObject.SetActive(true);
     }
 }
 
