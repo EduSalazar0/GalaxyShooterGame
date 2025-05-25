@@ -39,6 +39,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _shieldGameObject;
 
+    private UIManager _uiManager;
+    private GameManager _gameManager;
+
+    private SpawnManager _spawnManager;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -49,8 +54,19 @@ public class Player : MonoBehaviour
         //current pos = new position
         //speed = 10;
         transform.position = new Vector3(0, 0, 0);
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if(_uiManager != null)
+        {
+            _uiManager.UpdateLives(lives);
+        }
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
 
+        if(_spawnManager != null)
+        {
+            _spawnManager.StartSpawnRoutines();
+        }
     }
 
     // Update is called once per frame
@@ -158,9 +174,12 @@ public class Player : MonoBehaviour
             return;
         }
         lives -= 1;
+        _uiManager.UpdateLives(lives);
         if (lives < 1)
         {
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            _gameManager.gameOver = true;
+            _uiManager.ShowTitleScreen();
             Destroy(this.gameObject);
         }
     }
